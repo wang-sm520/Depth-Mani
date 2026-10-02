@@ -158,9 +158,9 @@ class CanEnv(DirectRLEnv):
             touched = force.norm(dim=-1).amax(dim=1).gt(1.0)
             dog = touched[..., :-1].flatten(1).any(1)
             floor = touched[..., -1:].flatten(1).any(1)
+            self.touched |= touched.flatten(1).any(1)
             self.touched_dog |= dog
             self.touched_floor |= floor
-            self.touched |= dog | floor
 
     def _apply_action(self):
         slot = self.tick % COMMAND_DELAY
