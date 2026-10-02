@@ -48,6 +48,10 @@ WRIST_CAM_ROT = (-0.18897, -0.68139, 0.68757, 0.16508)
 SCALE = 4
 
 
+PHYSICS_HZ, CONTROL_HZ = 100, 25
+SUBSTEPS = PHYSICS_HZ // CONTROL_HZ
+
+
 def _pinhole_canvas(K, dist, size, scale=SCALE):
     """Omniverse renders centred pinholes only: a canvas covering the real camera's (undistorted) view, and the
     grid_sample grid (align_corners=False) resampling it onto the real pixel grid downsampled by `scale`."""
@@ -121,6 +125,7 @@ class CanSceneCfg(InteractiveSceneCfg):
     floor = AssetBaseCfg(
         prim_path="{ENV_REGEX_NS}/Floor",
         spawn=sim_utils.CuboidCfg(size=(2 * FLOOR_HALF, 2 * FLOOR_HALF, 0.02), visible=False,
+                                  rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
                                   collision_props=sim_utils.CollisionPropertiesCfg()),
         init_state=AssetBaseCfg.InitialStateCfg(pos=(FLOOR_CENTER_X, 0.0, -0.01)))
     carpet = AssetBaseCfg(prim_path="{ENV_REGEX_NS}/Carpet", spawn=sim_utils.UsdFileCfg(usd_path=str(CARPET_USD)),
@@ -185,4 +190,5 @@ class CanSceneCfg(InteractiveSceneCfg):
         for link in ARM_LINKS:
             setattr(self, f"contact_{link}", ContactSensorCfg(
                 prim_path=f"{{ENV_REGEX_NS}}/Arm/arm_base/{link}",
-                filter_prim_paths_expr=[f"{{ENV_REGEX_NS}}/Dog/{name}" for name in DOG_LINKS] + ["{ENV_REGEX_NS}/Floor"]))
+                filter_prim_paths_expr=[f"{{ENV_REGEX_NS}}/Dog/{name}" for name in DOG_LINKS] + ["{ENV_REGEX_NS}/Floor"],
+                history_length=SUBSTEPS))

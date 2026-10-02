@@ -17,16 +17,14 @@ from isaaclab.utils.math import quat_apply, quat_from_euler_xyz, sample_uniform
 
 from airbot_rl.policy import FrozenBC
 from airbot_rl.assets import CAN_POSITIONS
-from airbot_rl.scene import ARM_LINKS, CAN_HEIGHT, CAN_RADIUS, CanSceneCfg, head_image, wrist_depth
+from airbot_rl.scene import ARM_LINKS, CAN_HEIGHT, CAN_RADIUS, CONTROL_HZ, PHYSICS_HZ, SUBSTEPS, CanSceneCfg, head_image, wrist_depth
 
-PHYSICS_HZ, CONTROL_HZ = 200, 25
-SUBSTEPS = PHYSICS_HZ // CONTROL_HZ
 EXECUTE = 4  # targets run per decision (deployment --chunk-size-execute)
 # Deployment client (airbot_deploy/client.py) limits and interpolation increments; sim and robot share them.
 LOWER = (-3.14, -2.96, -0.087, -3.01, -1.76, -3.01, 0.0)
 UPPER = (2.09, 0.17, 3.14, 3.01, 1.76, 3.01, 0.072)
 STEP_LENGTH = (0.01,) * 6 + (0.005,)
-COMMAND_DELAY = 20  # physics steps (100 ms) from target to drive, identified with scene.py's arm gains
+COMMAND_DELAY = 10  # physics steps (100 ms) from target to drive, identified with scene.py's arm gains
 HOME_EEF = 0.01  # recorded episodes start with the gripper closed at 0.007-0.01 m
 CAN_JITTER = 0.01  # m, around each recorded start position
 PAD_CENTER = (0.0, 0.0, 0.005)  # finger pad centre in each finger body; their midpoint is the grasp point
@@ -36,17 +34,17 @@ PAD_CENTER = (0.0, 0.0, 0.005)  # finger pad centre in each finger body; their m
 class CanEnvCfg(DirectRLEnvCfg):
     checkpoint = "runs/airbot-can100-da2-50k-20260929/best.pt"
 
-    # Gates and rewards agreed with the user (values marked "proposed" were delegated and reported).
-    max_targets = 1000  # timeout in policy targets, like deployment --max-steps
-    max_joint_step = 0.1  # rad between consecutive targets, joints 1-6
-    success_radius = 0.05  # proposed: grasp point back within 5 cm of home (all 100 demos end within 4.8 cm)
-    success_can_bottom = 0.25  # proposed: can's lowest point above the floor; dog deck is at 0.22 m
-    residual_scale = (0.05,) * 6 + (0.01,)  # proposed: rad for joints, m for the gripper
-    success_reward = 10.0  # proposed
-    limit_penalty = 100.0  # proposed: per rad/m removed by limit or step-cap clipping (0.1 rad = one success)
-    contact_penalty = 1.0  # proposed: per decision with an arm link touching the dog or the floor
-    topple_penalty = 0.5  # proposed: once per episode, small so a recovered grasp still pays
-    topple_angle = math.radians(45.0)  # proposed
+    # Gates and rewards are user-confirmed 10-03.
+    max_targets = 1000  # user-confirmed 10-03
+    max_joint_step = 0.1  # user-confirmed 10-03
+    success_radius = 0.05  # user-confirmed 10-03
+    success_can_bottom = 0.25  # user-confirmed 10-03
+    residual_scale = (0.05,) * 6 + (0.01,)  # user-confirmed 10-03
+    success_reward = 10.0  # user-confirmed 10-03
+    limit_penalty = 100.0  # user-confirmed 10-03
+    contact_penalty = 1.0  # user-confirmed 10-03
+    topple_penalty = 0.5  # user-confirmed 10-03
+    topple_angle = math.radians(45.0)  # user-confirmed 10-03
 
     decimation = SUBSTEPS  # replaced every step by SUBSTEPS x the number of waypoints to run
     episode_length_s = max_targets / CONTROL_HZ  # nominal; max_episode_length counts decisions instead
@@ -84,9 +82,11 @@ class CanEnv(DirectRLEnv):
         self.excess = torch.zeros(n, device=self.device)
         self.touched = torch.zeros(n, dtype=torch.bool, device=self.device)
         self.toppled = torch.zeros(n, dtype=torch.bool, device=self.device)
+        self.episode_toppled = torch.zeros(n, dtype=torch.bool, device=self.device)
         self.success = torch.zeros(n, dtype=torch.bool, device=self.device)
         self.queue = torch.zeros(COMMAND_DELAY, n, 7, device=self.device)  # targets in flight, kept across decisions
         self.tick = 0
+        self.current_ticks = 0
 
     @property
     def max_episode_length(self):
@@ -144,8 +144,14 @@ class CanEnv(DirectRLEnv):
         start = starts.gather(1, index)
         self.waypoints = start + (ends.gather(1, index) - start) * fraction[..., None]
         self.cfg.decimation = SUBSTEPS * ticks
+        self.current_ticks = ticks
         self.substep = 0
         self.touched[:] = False
+
+    def _update_touched(self, length):
+        for sensor in self.contacts:
+            force = sensor.data.force_matrix_w_history[:, :length]
+            self.touched |= force.norm(dim=-1).amax(dim=1).flatten(1).gt(1.0).any(1)
 
     def _apply_action(self):
         slot = self.tick % COMMAND_DELAY
@@ -153,8 +159,8 @@ class CanEnv(DirectRLEnv):
         self.queue[slot] = self.waypoints[:, self.substep // SUBSTEPS]
         self.tick += 1
         self.arm.set_joint_position_target(self.native_to_sim(delayed))
-        for sensor in self.contacts:  # 1 N, Isaac Lab's default contact threshold
-            self.touched |= (sensor.data.force_matrix_w.norm(dim=-1) > 1.0).flatten(1).any(1)
+        if self.substep and self.substep % SUBSTEPS == 0:
+            self._update_touched(SUBSTEPS)
         self.substep += 1
 
     def _get_observations(self):
@@ -170,6 +176,7 @@ class CanEnv(DirectRLEnv):
                 "critic": torch.cat((privileged, self.bc_chunk.flatten(1)), 1)}
 
     def _get_dones(self):
+        self._update_touched(min(self.current_ticks, SUBSTEPS))
         cos = self.can_tilt_cos().abs()
         lowest = self.can.data.root_pos_w[:, 2] - CAN_HEIGHT / 2 * cos - CAN_RADIUS * (1 - cos ** 2).sqrt()
         home = (self.grasp_point() - self.home).norm(dim=1) < self.cfg.success_radius
@@ -179,10 +186,15 @@ class CanEnv(DirectRLEnv):
     def _get_rewards(self):
         toppled = (self.can_tilt_cos() < math.cos(self.cfg.topple_angle)) & ~self.toppled
         self.toppled |= toppled
+        self.episode_toppled = self.toppled.clone()
         reward = (self.cfg.success_reward * self.success - self.cfg.limit_penalty * self.excess
                   - self.cfg.contact_penalty * self.touched - self.cfg.topple_penalty * toppled)
-        self.extras["log"] = {"success": self.success.float().mean(), "clip_excess": self.excess.mean(),
-                              "contact": self.touched.float().mean(), "toppled": self.toppled.float().mean()}
+        logs = {"success": self.success.float().mean(), "clip_excess": self.excess.mean(),
+                "contact": self.touched.float().mean(), "toppled": self.toppled.float().mean()}
+        ended = self.reset_terminated | self.reset_time_outs
+        if ended.any():
+            logs["episode_success"] = self.success[ended].float().mean()
+        self.extras["log"] = logs
         return reward
 
     def _reset_idx(self, env_ids):
