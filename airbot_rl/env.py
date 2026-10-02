@@ -32,7 +32,7 @@ PAD_CENTER = (0.0, 0.0, 0.005)  # finger pad centre in each finger body; their m
 
 @configclass
 class CanEnvCfg(DirectRLEnvCfg):
-    checkpoint = "runs/airbot-can100-da2-50k-20260929/best.pt"
+    checkpoint = "airbot_rl/runs/bc_wrist_v1/step_006000.pt"
 
     # Gates and rewards are user-confirmed 10-03.
     max_targets = 1000  # user-confirmed 10-03
