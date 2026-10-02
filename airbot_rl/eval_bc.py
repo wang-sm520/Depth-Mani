@@ -60,6 +60,8 @@ def main():
     zero = torch.zeros(env.num_envs, cfg.action_space, device=env.device)
     active = torch.ones(env.num_envs, dtype=torch.bool, device=env.device)
     touched = torch.zeros(env.num_envs, dtype=torch.bool, device=env.device)
+    touched_dog = torch.zeros(env.num_envs, dtype=torch.bool, device=env.device)
+    touched_floor = torch.zeros(env.num_envs, dtype=torch.bool, device=env.device)
     toppled = torch.zeros(env.num_envs, dtype=torch.bool, device=env.device)
     excess = torch.zeros(env.num_envs, device=env.device)
     length = torch.zeros(env.num_envs, dtype=torch.long, device=env.device)
@@ -85,6 +87,8 @@ def main():
             action = zero
         obs_dict, _, success, timeout, _ = env.step(action)
         touched |= env.touched & running
+        touched_dog |= env.touched_dog & running
+        touched_floor |= env.touched_floor & running
         toppled |= env.episode_toppled & running
         excess += env.excess * running
         length += running
@@ -94,6 +98,8 @@ def main():
                 "success": bool(success[i]),
                 "decisions": int(length[i]),
                 "contact": bool(touched[i]),
+                "contact_dog": bool(touched_dog[i]),
+                "contact_floor": bool(touched_floor[i]),
                 "toppled": bool(toppled[i]),
                 "clip_excess": float(excess[i]),
                 "approach_entered": bool(approach_seen[i]),
@@ -108,7 +114,7 @@ def main():
     episodes = [record for record in records if record is not None]
     heights = [record["approach_height"] for record in episodes if record["approach_height"] is not None]
     summary = {key: sum(record[key] for record in episodes) / len(episodes)
-               for key in ("success", "contact", "toppled")}
+               for key in ("success", "contact", "contact_dog", "contact_floor", "toppled")}
     summary.update(
         episodes=len(episodes),
         mean_clip_excess=sum(record["clip_excess"] for record in episodes) / len(episodes),

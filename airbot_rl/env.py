@@ -81,6 +81,8 @@ class CanEnv(DirectRLEnv):
         self.home = torch.zeros(n, 3, device=self.device)
         self.excess = torch.zeros(n, device=self.device)
         self.touched = torch.zeros(n, dtype=torch.bool, device=self.device)
+        self.touched_dog = torch.zeros(n, dtype=torch.bool, device=self.device)
+        self.touched_floor = torch.zeros(n, dtype=torch.bool, device=self.device)
         self.toppled = torch.zeros(n, dtype=torch.bool, device=self.device)
         self.episode_toppled = torch.zeros(n, dtype=torch.bool, device=self.device)
         self.success = torch.zeros(n, dtype=torch.bool, device=self.device)
@@ -147,11 +149,18 @@ class CanEnv(DirectRLEnv):
         self.current_ticks = ticks
         self.substep = 0
         self.touched[:] = False
+        self.touched_dog[:] = False
+        self.touched_floor[:] = False
 
     def _update_touched(self, length):
         for sensor in self.contacts:
             force = sensor.data.force_matrix_w_history[:, :length]
-            self.touched |= force.norm(dim=-1).amax(dim=1).flatten(1).gt(1.0).any(1)
+            touched = force.norm(dim=-1).amax(dim=1).gt(1.0)
+            dog = touched[..., :-1].flatten(1).any(1)
+            floor = touched[..., -1:].flatten(1).any(1)
+            self.touched_dog |= dog
+            self.touched_floor |= floor
+            self.touched |= dog | floor
 
     def _apply_action(self):
         slot = self.tick % COMMAND_DELAY
