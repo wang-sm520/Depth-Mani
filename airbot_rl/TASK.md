@@ -118,3 +118,10 @@ python airbot_rl/finetune_bc.py --checkpoint runs/airbot-can100-da2-50k-20260929
 ## 9. 进度记录
 
 （每个里程碑追加在这里）
+
+- 2026-10-03 M0.1：home 姿态下过滤接触力最大值 `0.000 N`；压地回放时左/右手指分别为 `17.618 N`/`25.217 N`，均超过 1 N；启动日志无旧的 Floor GPU contact filter 警告。日志：`/tmp/rltest/m0_contact_floor.log`。
+- 2026-10-03 M0.2：60 张真实头部画面深度均值差 `0.0001713`，BC chunk 均值差 `0.0001501`；128 张 GPU 预处理约 `445.6 ms`，验收通过。
+- 2026-10-03 M0.4：64 环境、20 次决策逐物理步与历史接触读取的 `touched` 逐步比较总不一致 `0`，验收通过。日志：`/tmp/rltest/m0_contact_history.log`。
+- 2026-10-03 M0.3：10 条验证集开环驱动回放在 5 ms/10 ms 下的关节 MAE 分别为 `0.0038764053`/`0.0038699764` rad，比值 `0.99834`，驱动验收通过。相同的 30 条 FK 罐子起始位置开环抓取，5 ms 成功 `13/30`（`43.33%`），10 ms 成功 `12/30`（`40.00%`），差 `3.33` 个百分点，抓取验收通过。最终采用 10 ms 物理步长（100 Hz，4 substeps，100 ms 延迟对应 10 个物理步）。结果：`/tmp/rltest/m03_step_compare.json`；分批日志：`/tmp/rltest/m03_200_b*.log`、`/tmp/rltest/m03_100_b*.log`。
+- 2026-10-03 M0.5：`eval_bc.py` 已静态检查通过，并用 4 环境跑通首个 episode 统计；每个 episode 均计 250 次决策，输出 `approach_height_median` 与 `approach_no_entry_rate` 字段。冒烟结果成功率 `0`、接触率 `0`、侧翻率 `0`、未进入接近区比例 `1.0`；结果：`/tmp/rltest/m05_eval_smoke/summary.json`。
+- 2026-10-03 M0.6：原 BC checkpoint、128 环境初始 smoke 的 3 个 iteration 耗时分别为 `51.04 s`、`51.14 s`、`50.63 s`，均无 NaN/inf；从最新保存的 `model_2.pt` 恢复 1 个 iteration 成功，恢复日志 iteration `2/3`、耗时 `53.78 s`。日志和状态：`/tmp/rltest/m06_smoke/initial.log`、`/tmp/rltest/m06_smoke/resume.log`、`/tmp/rltest/m06_smoke.done`。
