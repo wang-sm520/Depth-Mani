@@ -1,0 +1,22 @@
+{
+  "openpi_root": "/home/user/wang-sm/openpi",
+  "libero_root": "/home/user/wang-sm/openpi/third_party/libero",
+  "teacher_checkpoint": "/home/user/.cache/openpi/openpi-assets/checkpoints/pi05_libero",
+  "suite": "libero_goal",
+  "task": "put_the_cream_cheese_in_the_bowl",
+  "resolution": 256,
+  "control_freq": 20,
+  "settle_steps": 10,
+  "max_steps": 300,
+  "teacher_replan_steps": 5,
+  "seed": 20260924,
+  "manifest": "data/cream_cheese/splits.json",
+  "data_dir": "data/cream_cheese/teacher",
+  "teacher_port": 8015,
+  "official_center_bounds": {
+    "cream_cheese_1": {
+      "minimum_xy_m": [-0.07, 0.11],
+      "maximum_xy_m": [-0.03, 0.15]
+    }
+  }
+}

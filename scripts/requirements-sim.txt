@@ -1,0 +1,6 @@
+robosuite==1.4.1
+mujoco==3.2.3
+bddl==1.0.1
+easydict==1.13
+gym==0.25.2
+future==1.0.0

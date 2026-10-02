@@ -1,0 +1,32 @@
+{
+  "openpi_root": "/home/user/wang-sm/openpi",
+  "libero_root": "/home/user/wang-sm/openpi/third_party/libero",
+  "teacher_checkpoint": "/home/user/.cache/openpi/openpi-assets/checkpoints/pi05_libero",
+  "suite": "libero_goal",
+  "task": "put_the_cream_cheese_in_the_bowl",
+  "resolution": 256,
+  "control_freq": 20,
+  "settle_steps": 10,
+  "max_steps": 300,
+  "teacher_replan_steps": 5,
+  "seed": 20260924,
+  "manifest": "data/cream_cheese/splits.json",
+  "data_dir": "data/cream_cheese/evaluation-only-3x",
+  "teacher_port": 8015,
+  "evaluation_only": true,
+  "evaluation_bddl": "configs/evaluation/cream_cheese_3x.bddl",
+  "evaluation_bddl_sha256": "c2352890e46722f68f5f9a9f06e710621e0ebf9769377cd62c61fad5f0826932",
+  "evaluation_distribution": "cream cheese center x=[-0.11,0.01]m y=[0.07,0.19]m (12cm total width per axis, 3x the official effective width); all other original BDDL regions, objects, rotations and goal unchanged; evaluation only, not official benchmark",
+  "official_center_bounds": {
+    "cream_cheese_1": {
+      "minimum_xy_m": [-0.07, 0.11],
+      "maximum_xy_m": [-0.03, 0.15]
+    }
+  },
+  "evaluation_center_bounds": {
+    "cream_cheese_1": {
+      "minimum_xy_m": [-0.11, 0.07],
+      "maximum_xy_m": [0.01, 0.19]
+    }
+  }
+}

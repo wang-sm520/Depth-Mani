@@ -1,0 +1,16 @@
+{
+  "openpi_root": "/home/user/wang-sm/openpi",
+  "libero_root": "/home/user/wang-sm/openpi/third_party/libero",
+  "teacher_checkpoint": "/home/user/.cache/openpi/openpi-assets/checkpoints/pi05_libero",
+  "suite": "libero_goal",
+  "task": "put_the_wine_bottle_on_top_of_the_cabinet",
+  "resolution": 256,
+  "control_freq": 20,
+  "settle_steps": 10,
+  "max_steps": 300,
+  "teacher_replan_steps": 5,
+  "seed": 20260922,
+  "manifest": "data/wine/splits.json",
+  "data_dir": "data/wine/teacher",
+  "teacher_port": 8015
+}

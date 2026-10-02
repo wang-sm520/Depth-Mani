@@ -1,0 +1,12 @@
+[Unit]
+Description=AIRBOT can RGB to Depth Anything to action policy
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/nvme/pi05/airbot-can100-da2-50k-20260929-orin-can
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /mnt/nvme/pi05/airbot-can100-da2-50k-20260929-orin-can/deploy.py serve
+Restart=no
+KillSignal=SIGINT
+TimeoutStopSec=30

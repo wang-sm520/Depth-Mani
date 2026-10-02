@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "profile_id": "airbot-paperbag200-da2-100k-best76k",
+  "bundle": "deploy/airbot-paperbag200-da2-100k-20260924",
+  "policy": {
+    "checkpoint_sha256": "8d09e474d3c9c0836a1f4896de05324b1fdaefc041a9d66a47caca116b17963d",
+    "prompt": "pick up the red paper bag and hold in the reset position",
+    "fps": 25,
+    "horizon": 8,
+    "state_dim": 7,
+    "action_dim": 7,
+    "state_names": ["joint1.pos", "joint2.pos", "joint3.pos", "joint4.pos", "joint5.pos", "joint6.pos", "eef.pos"],
+    "action_names": ["joint1.pos", "joint2.pos", "joint3.pos", "joint4.pos", "joint5.pos", "joint6.pos", "eef.pos"],
+    "state_units": ["rad", "rad", "rad", "rad", "rad", "rad", "m"],
+    "action_units": ["rad", "rad", "rad", "rad", "rad", "rad", "m"],
+    "action_semantics": "absolute_joint_position",
+    "input_color": "RGB",
+    "camera_keys": ["observation.images.head", "observation.images.wrist"],
+    "camera_mapping": {
+      "observation/base_0_rgb": "observation.images.head",
+      "observation/left_wrist_0_rgb": "observation.images.wrist"
+    }
+  },
+  "robot": {
+    "control_frequency": 100,
+    "camera_names": ["base_0_rgb", "left_wrist_0_rgb"],
+    "camera_index": ["rtsp://192.168.168.168:8554/front", "realsense://260322275842"],
+    "camera_widths": [1920, 848],
+    "camera_heights": [1080, 480],
+    "camera_fps": [25, 30],
+    "chunk_size_execute": 4,
+    "step_length": [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.005],
+    "joint_limits": [[-3.14, 2.09], [-2.96, 0.17], [-0.087, 3.14], [-3.01, 3.01], [-1.76, 1.76], [-3.01, 3.01]],
+    "gripper_limits": [0.0, 0.072],
+    "gripper_out_of_range": "clip_with_warning",
+    "max_camera_age_s": 2.0
+  },
+  "transport": {
+    "host": "127.0.0.1",
+    "port": 8026,
+    "connect_timeout_s": 10.0,
+    "inference_timeout_s": 2.0,
+    "max_message_bytes": 33554432
+  },
+  "environments": {
+    "workstation": {
+      "inference_python": "/home/user/miniconda3/envs/atec/bin/python",
+      "robot_python": "/home/user/wang-sm/pi0.5/openpi_v0.2.0/.venv/bin/python",
+      "openpi_root": "vendor/airbot_orin_20260924/openpi",
+      "native_library_dir": null
+    },
+    "orin": {
+      "inference_python": null,
+      "robot_python": "/mnt/nvme/pi05/runtime/official-20260910/robot-venv/bin/python",
+      "openpi_root": "/mnt/nvme/pi05/runtime/official-20260910/openpi_v0.2.0",
+      "native_library_dir": "/mnt/nvme/pi05/runtime/official-20260910/native/lib"
+    }
+  }
+}

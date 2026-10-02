@@ -1,0 +1,26 @@
+{
+  "openpi_root": "/home/user/wang-sm/openpi",
+  "libero_root": "/home/user/wang-sm/openpi/third_party/libero",
+  "teacher_checkpoint": "/home/user/.cache/openpi/openpi-assets/checkpoints/pi05_libero",
+  "suite": "libero_goal",
+  "task": "put_the_wine_bottle_on_top_of_the_cabinet",
+  "resolution": 256,
+  "control_freq": 20,
+  "settle_steps": 10,
+  "max_steps": 300,
+  "teacher_replan_steps": 5,
+  "seed": 20260922,
+  "manifest": "data/wine/splits.json",
+  "data_dir": "data/wine/evaluation-only-10cm",
+  "teacher_port": 8015,
+  "evaluation_only": true,
+  "evaluation_bddl": "configs/evaluation/wine_bottle_10cm.bddl",
+  "evaluation_bddl_sha256": "1996199784606c5151712f9bd94b656b183d5bb73d91276393dadd14e0336700",
+  "evaluation_distribution": "wine bottle center x=[-0.25,-0.15]m y=[-0.10,0.00]m (10cm total width each); all other original BDDL regions, objects, rotations and goal unchanged; expanded-range evaluation, not official benchmark",
+  "evaluation_center_bounds": {
+    "wine_bottle_1": {
+      "minimum_xy_m": [-0.25, -0.10],
+      "maximum_xy_m": [-0.15, 0.00]
+    }
+  }
+}

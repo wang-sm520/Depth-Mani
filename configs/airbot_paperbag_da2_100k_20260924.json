@@ -1,0 +1,16 @@
+{
+  "experiment_id": "airbot-paperbag200-da2-100k-20260924",
+  "parent_run": "runs/airbot-paperbag200-da2-50k-20260924",
+  "parent_audit": "reports/airbot-paperbag200-da2-50k-20260924/report.json",
+  "start_step": 50000,
+  "target_step": 100000,
+  "run": "runs/airbot-paperbag200-da2-100k-20260924",
+  "report": "reports/airbot-paperbag200-da2-100k-20260924",
+  "bundle": "deploy/airbot-paperbag200-da2-100k-20260924",
+  "state": "runtime/airbot-paperbag200-da2-100k-20260924-state.json",
+  "logs": "runtime/logs/airbot-paperbag200-da2-100k-20260924",
+  "device": "cuda",
+  "threads": 4,
+  "restore": ["model", "optimizer", "sampler_rng", "torch_rng", "python_rng", "numpy_rng", "cuda_rng"],
+  "robot_executed": false
+}

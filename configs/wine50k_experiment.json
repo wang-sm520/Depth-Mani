@@ -1,0 +1,22 @@
+{
+  "label": "wine300-50k-20260923",
+  "training_data": "data/wine/teacher",
+  "training_limit": 300,
+  "training_seed": 0,
+  "training_steps": 50000,
+  "checkpoint_steps": [10000, 20000, 30000, 40000, 50000],
+  "training_python": "/home/user/miniconda3/envs/atec/bin/python",
+  "modalities": ["depth", "rgb"],
+  "inputs": "Two views of the selected modality, eight-dimensional robot state, and language; no pretrained parameters",
+  "episodes_per_group": 200,
+  "replan_steps": 4,
+  "evaluation_cpu_sets": ["0-3", "4-7", "12-15", "16-19", "20-23", "24-27"],
+  "training_cpu_set": "8-11",
+  "groups": {
+    "official-range200": {"config": "configs/wine.json", "seed": 2026092500},
+    "expanded10cm200": {"config": "configs/wine_10cm_eval.json", "seed": 2026092700}
+  },
+  "recording": "Compact evaluation only: all states/actions/timestamps, per-frame RGB-D hashes, first policy observation, initial/final simulator states, scene XML",
+  "selection": "All five fixed steps, both modalities, both frozen banks, every initial state once; no outcome-based filtering",
+  "official_range_note": "200 fresh native random resets in original placement bounds, not official 50 saved states repeated four times"
+}

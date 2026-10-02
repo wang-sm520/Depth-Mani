@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+data/
+runs/
+runtime/
+*.pyc
+
+# Generated simulator data and converted assets are kept on the training host.
+airbot_rl/datasets/
+airbot_rl/eval/
+airbot_rl/runs/
+airbot_rl/previews/
+airbot_rl/__pycache__/
+airbot_rl/.backup-*/
+airbot_rl/assets/usd/
+airbot_rl/assets/meshes/
+deploy/**/hf_hub/
+deploy/**/model/

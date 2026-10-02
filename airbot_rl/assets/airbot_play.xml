@@ -1,0 +1,128 @@
+<mujoco model="airbot_play">
+  <compiler angle="radian" meshdir="meshes/" />
+
+  <default>
+    <site size="0.001 0.005 0.005" group="3" />
+    <default class="aribot_play">
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2" />
+      </default>
+      <default class="collision">
+        <geom type="mesh" condim="6" group="3" solref="0.001 10" solimp="2 1 0.01" />
+      </default>
+      <default class="joint1">
+        <joint range="-3.151 2.089" actuatorfrcrange="-24 24" damping="0.2" frictionloss="15" />
+        <general ctrlrange="-3.151 2.089" biastype="affine" biasprm="0 -1" />
+      </default>
+      <default class="joint2">
+        <joint range="-2.963 0.181" actuatorfrcrange="-24 24" damping="0.2" frictionloss="15" />
+        <general ctrlrange="-2.963 0.181" biastype="affine" biasprm="0 -1" />
+      </default>
+      <default class="joint3">
+        <joint range="-0.094 3.161" actuatorfrcrange="-24 24" damping="0.2" frictionloss="15" />
+        <general ctrlrange="-0.094 3.161" biastype="affine" biasprm="0 -1" />
+      </default>
+      <default class="joint4">
+        <joint range="-3.012 3.012" actuatorfrcrange="-8 8" damping="0.1" frictionloss="5" />
+        <general ctrlrange="-3.012 3.012" biastype="affine" biasprm="0 -1" />
+      </default>
+      <default class="joint5">
+        <joint range="-1.859 1.859" actuatorfrcrange="-8 8" damping="0.1" frictionloss="5" />
+        <general ctrlrange="-1.859 1.859" biastype="affine" biasprm="0 -1" />
+      </default>
+      <default class="joint6">
+        <joint range="-3.017 3.017" actuatorfrcrange="-8 8" damping="0.1" frictionloss="5" />
+        <general ctrlrange="-3.017 3.017" biastype="affine" biasprm="0 -1" />
+      </default>
+      <default class="finger1">
+        <joint type="slide" range="-0.04 0" damping="1" />
+      </default>
+      <default class="finger2">
+        <joint type="slide" range="0 0.04" damping="1" />
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <material name="Paint_Matte_Black" rgba="0.00111266 0.00111266 0.00111266 1" />
+    <material name="Paint_Metallic_White" rgba="0.928523 0.928523 0.928523 1" />
+    <material name="Gree_Light_Base" rgba="0.6 1 1 1" />
+    <mesh name="arm_base_0" content_type="model/obj" file="airbot_play/arm_base_0.obj" />
+    <mesh name="arm_base_1" content_type="model/obj" file="airbot_play/arm_base_1.obj" />
+    <mesh name="link1" content_type="model/obj" file="airbot_play/link1.obj" />
+    <mesh name="link2_0" content_type="model/obj" file="airbot_play/link2_0.obj" />
+    <mesh name="link2_1" content_type="model/obj" file="airbot_play/link2_1.obj" />
+    <mesh name="link3_0" content_type="model/obj" file="airbot_play/link3_0.obj" />
+    <mesh name="link3_1" content_type="model/obj" file="airbot_play/link3_1.obj" />
+    <mesh name="link4" content_type="model/obj" file="airbot_play/link4.obj" />
+    <mesh name="link5_0" content_type="model/obj" file="airbot_play/link5_0.obj" />
+    <mesh name="link5_1" content_type="model/obj" file="airbot_play/link5_1.obj" />
+    <mesh name="link6" content_type="model/obj" file="airbot_play/link6.obj" />
+    <mesh name="camera_stand" content_type="model/obj" file="airbot_play/camera_stand.obj" />
+    <mesh name="left" content_type="model/obj" file="airbot_play/left.obj" />
+    <mesh name="right" content_type="model/obj" file="airbot_play/right.obj" />
+  </asset>
+
+  <worldbody>
+    <body name="arm_base" childclass="aribot_play">
+      <geom class="collision" size="0.0806 0.1375 0.0025" pos="-0.02 0 0.005" quat="0.707105 0 0 0.707108" type="box" rgba="0.2 0.2 0.2 1" />
+      <geom class="collision" size="0.07 0.05 0.04" pos="-0.015 0 0.045" type="box" rgba="1 0 0 0.5" />
+      <geom class="visual" pos="0 0 -0.0015" quat="1 0 0 0" material="Gree_Light_Base" mesh="arm_base_0" />
+      <geom class="visual" material="Paint_Matte_Black" mesh="arm_base_1" />
+      <site name="armbase" pos="0 0 0" />
+      <body name="link1" pos="0 0 0.1172">
+        <inertial pos="7.9126e-05 -0.002527 -0.0041359" quat="0.696716 0.716558 0.0238919 -0.0236876" mass="0.54639" diaginertia="0.000346294 0.000325437 0.000286269" />
+        <joint name="joint1" class="joint1" pos="0 0 0" axis="0 0 1" />
+        <geom class="visual" material="Paint_Matte_Black" mesh="link1" />
+        <body name="link2" quat="0.135866 0.135867 -0.69393 0.693932">
+          <inertial pos="0.22493 0.0047721 0.008023" quat="-0.210875 0.632473 -0.273056 0.693506" mass="0.64621" diaginertia="0.00516535 0.00505042 0.000418626" />
+          <joint name="joint2" class="joint2" pos="0 0 0" axis="0 0 1" />
+          <geom class="collision" size="0.11 0.03 0.04" pos="0.08 0.015 0" quat="0.997189 0 0 0.0749297" type="box" rgba="1 0 0 1" />
+          <geom class="collision" size="0.065 0.025 0.045" pos="0.235 0.015 0" quat="0.988771 0 0 -0.149438" type="box" rgba="1 0 0 1" />
+          <geom class="visual" material="Paint_Matte_Black" mesh="link2_0" />
+          <geom class="visual" material="Paint_Metallic_White" mesh="link2_1" />
+          <body name="link3" pos="0.27009 0 0" quat="0.192144 0 0 -0.981367">
+            <inertial pos="0.16813 -5.5576e-05 0.0031184" quat="0.511278 0.488423 0.489191 0.510617" mass="0.26829" diaginertia="0.0031527 0.0030951 0.000239403" />
+            <joint name="joint3" class="joint3" pos="0 0 0" axis="0 0 1" />
+            <geom class="collision" size="0.13 0.025 0.025" pos="0.13 0 0" type="box" rgba="1 0 0 1" />
+            <geom class="visual" material="Paint_Matte_Black" mesh="link3_0" />
+            <geom class="visual" material="Paint_Metallic_White" mesh="link3_1" />
+            <body name="link4" pos="0.29015 0 0" quat="-2.59734e-06 0.707105 2.59735e-06 0.707108">
+              <inertial pos="5.2436e-06 0.00040412 -0.03228" quat="0.999969 -0.000174762 -0.00792041 -6.98144e-05" mass="0.34876" diaginertia="0.000423574 0.000412 0.000126826" />
+              <joint name="joint4" class="joint4" pos="0 0 0" axis="0 0 1" />
+              <geom class="visual" material="Paint_Matte_Black" mesh="link4" />
+              <body name="link5" quat="0.707105 0.707108 0 0">
+                <inertial pos="8.3328e-06 0.026148 0.002525" quat="0.531568 0.4663 0.4663 0.531568" mass="0.36132" diaginertia="0.0004677 0.000432922 0.000178178" />
+                <joint name="joint5" class="joint5" pos="0 0 0" axis="0 0 1" />
+                <geom class="visual" material="Paint_Matte_Black" mesh="link5_0" />
+                <geom class="visual" material="Paint_Metallic_White" mesh="link5_1" />
+                <body name="link6" pos="0 0.23645 0" quat="0.499998 -0.5 0.5 0.500002">
+                  <inertial pos="-0.0047053 7.3857e-05 -0.12293" mass="0.53855" diaginertia="5e-05 5e-05 3.85e-05" />
+                  <joint name="joint6" class="joint6" pos="0 0 0" axis="0 0 1" />
+                  <geom class="collision" size="0.025 0.08 0.015" pos="0 0 -0.07" type="box" rgba="1 0 0 1" />
+                  <geom class="visual" material="Paint_Matte_Black" mesh="link6" />
+                  <geom class="visual" material="Paint_Matte_Black" mesh="camera_stand" />
+                  <site name="endpoint" pos="0 0 0.015" quat="0.707105 0 -0.707108 0" />
+                  <body name="left">
+                    <inertial pos="-0.048742 0.0096369 0.00044322" quat="0.757393 0.0415116 0.0313705 0.650883" mass="0.0626" diaginertia="2.79281e-05 1.90181e-05 1.21737e-05" />
+                    <joint name="endleft" class="finger2" pos="0 0 0" axis="0 1 0" />
+                    <geom class="visual" material="Paint_Matte_Black" mesh="right" />
+                    <geom name="left_finger_pad" class="collision" size="0.00525 0.002 0.02" pos="0 0.002 0.005" type="box" rgba="1 0 0 1" />
+                    <geom class="collision" size="0.015 0.002 0.018" pos="0 0.002 -0.035" type="box" rgba="1 0 0 1" />
+                  </body>
+                  <body name="right">
+                    <inertial pos="-0.049039 -0.0096764 0.00038868" quat="0.650491 0.0296695 0.0398251 0.757889" mass="0.061803" diaginertia="2.74809e-05 1.88104e-05 1.19127e-05" />
+                    <joint name="endright" class="finger1" pos="0 0 0" axis="0 1 0" />
+                    <geom class="visual" material="Paint_Matte_Black" mesh="left" />
+                    <geom name="right_finger_pad" class="collision" size="0.00525 0.002 0.02" pos="0 -0.002 0.005" type="box" rgba="1 0 0 1" />
+                    <geom class="collision" size="0.015 0.002 0.018" pos="0 -0.002 -0.035" type="box" rgba="1 0 0 1" />
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>

@@ -1,0 +1,8 @@
+{
+  "experiment_id": "airbot-can100-da2-50k-20260929",
+  "prompt": "pick can bd",
+  "inference_python": "/home/user/miniconda3/envs/atec/bin/python",
+  "robot_python": "/mnt/nvme/pi05/runtime/official-20260910/robot-venv/bin/python",
+  "openpi_root": "/mnt/nvme/pi05/runtime/official-20260910/openpi_v0.2.0",
+  "native_library_dir": "/mnt/nvme/pi05/runtime/official-20260910/native/lib"
+}

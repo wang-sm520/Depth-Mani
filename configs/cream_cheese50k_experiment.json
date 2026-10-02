@@ -1,0 +1,28 @@
+{
+  "label": "cream-cheese300-50k-20260924",
+  "training_data": "data/cream_cheese/teacher",
+  "attempt_bank": "data/cream_cheese/attempts.json",
+  "train_attempts": 3000,
+  "validation_attempts": 300,
+  "pilot_train_attempts": 8,
+  "pilot_validation_attempts": 4,
+  "train_seed": 2026100000,
+  "validation_seed": 2026104000,
+  "training_limit": 300,
+  "validation_limit": 7,
+  "training_seed": 0,
+  "training_steps": 50000,
+  "checkpoint_steps": [10000, 20000, 30000, 40000, 50000],
+  "training_python": "/home/user/miniconda3/envs/atec/bin/python",
+  "modalities": ["rgb", "depth"],
+  "inputs": "Two views of the selected modality, eight-dimensional robot state, and language; no pretrained parameters",
+  "replan_steps": 4,
+  "evaluation_cpu_sets": ["0-3", "4-7", "12-15", "16-19", "20-23", "24-27"],
+  "training_cpu_set": "8-11",
+  "groups": {
+    "official-range100": {"config": "configs/cream_cheese.json", "seed": 2026105000, "count": 100},
+    "expanded3x200": {"config": "configs/cream_cheese_3x_eval.json", "seed": 2026106000, "count": 200}
+  },
+  "recording": "Full RGB-D schema1 demonstrations; compact schema2 evaluation with all states/actions/timestamps, per-frame RGB-D hashes, first policy observation, initial/final simulator states, scene XML",
+  "selection": "300 unique successful train and 7 independent successful validation states; all five fixed steps, both modalities, both frozen test banks, every test initial state once; no outcome-based filtering"
+}
